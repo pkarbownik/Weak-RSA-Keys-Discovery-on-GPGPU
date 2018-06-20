@@ -1,3 +1,11 @@
+/** @file cuda_bignum.cu
+ *  @brief Unit tests
+ *
+ *  Functions used in GCD algorithm and in main
+ *
+ *  @author Przemysław Karbownik (pkarbownik)
+ */
+
 #include "cuda_bignum.h"
 
 #ifndef MAX
@@ -60,19 +68,6 @@ unsigned cu_bn_mul_words(unsigned  *rp, const unsigned  *ap, int num, unsigned  
     return (c1);
 
 }
-
-/*__device__ void * cu_realloc(void * old_p, unsigned new_s)
-{
-    void* new_p = (void*) malloc (new_s);
-    unsigned old_s = sizeof(old_p);
-    if(old_s <= new_s){
-        memcpy(old_p, new_p, old_s);
-    } else {
-        memcpy(old_p, new_p, new_s);
-    }
-    free(old_p);
-    return (new_p);
-}*/
 
 int cu_bn_mul_word(U_BN *a, unsigned w){
 

@@ -8,17 +8,6 @@
 
 
 #include "device_cuda_bignum.h"
-/*#include "cuPrintf.cu"
-
-#if __CUDA_ARCH__ < 200     //Compute capability 1.x architectures
-#define CUPRINTF cuPrintf
-#else                       //Compute capability 2.x architectures
-#define CUPRINTF(fmt, ...) printf("[%d, %d]:\t" fmt, \
-                                  blockIdx.y*gridDim.x+blockIdx.x,\
-                                  threadIdx.z*blockDim.x*blockDim.y+threadIdx.y*blockDim.x+threadIdx.x,\
-                                  __VA_ARGS__)
-#endif*/
-
 
 typedef enum {
     EUCLIDEAN=0,
@@ -90,6 +79,10 @@ int main(int argc, char* argv[]){
     algorithms gcd_kind;
     procUnit cpu_gpu;
 
+    /**
+    	Get command line arguments and set appropriate program parameters
+    */
+
     if(argc==7) {
         for(counter=0;counter<argc;counter++){
             switch(counter){
@@ -126,7 +119,6 @@ int main(int argc, char* argv[]){
         return 0;
     }
 
-    // simplified binomial coefficient
     number_of_comutations=((number_of_keys/2)*(number_of_keys-1));
 
     U_BN tmp;
@@ -139,9 +131,16 @@ int main(int argc, char* argv[]){
     char *tmp_path;
     cudaError_t cudaStatus;
 
-    //unit_test();
+    /**
+    	Execute tests for cuda_bignum functions
+    */
+
+    unit_test();
     //OpenSSL_GCD(number_of_keys, key_size, keys_directory);
 
+    /**
+    	Allocate memory for RSA public key modulus
+    */
 
     A    = (U_BN*)malloc(number_of_comutations*sizeof(U_BN));
     B    = (U_BN*)malloc(number_of_comutations*sizeof(U_BN));
@@ -188,11 +187,19 @@ int main(int argc, char* argv[]){
 
     }
 
+    /**
+    	Get RSA public keys from files 
+    */
+
     for(i=0; i<number_of_keys; i++){
         cu_PEMs[i] = tmp;
         asprintf(&tmp_path, "%s/%d.pem", keys_directory, (i+1));
         get_u_bn_from_mod_PEM(tmp_path, &cu_PEMs[i]);
     }
+
+    /**
+    	Collect list A and B for computing
+    */
 
     for(i=0, k=0; i<number_of_keys; i++){
         for(j=(i+1); j<number_of_keys; j++, k++){
@@ -205,6 +212,9 @@ int main(int argc, char* argv[]){
         }
     }
 
+    /**
+    	Execute if GPU is command line argument
+    */
 
     int sum=0;
 
@@ -238,6 +248,9 @@ int main(int argc, char* argv[]){
         cudaEventCreate(&start_cu);
         cudaEventCreate(&stop_cu);
         cudaEventRecord(start_cu, 0);
+        /**
+    		Select algorithm passed as command line argument
+    	*/
         switch(gcd_kind){
             case EUCLIDEAN:
                 printf("[GPU] Euclidean algorithm\n");
@@ -295,21 +308,9 @@ int main(int argc, char* argv[]){
             return 1;
         }
 
-
-        //cudaFree(out);
-        //free(array_A);
-        //free(array_B);
-        //free(array_C);
-        //cudaFree(device_U_BN_A);
-        //cudaFree(device_U_BN_B);
-        //cudaFree(device_U_BN_C);
-
         sum=0;
         for (k = 0; k < number_of_comutations; k++){
             if( strcmp( "1", cu_bn_bn2hex(&C[k]))){
-                //printf("[GPU] Fast Weak key: %s\n", cu_bn_bn2hex(&A[k]));
-                //printf("[GPU] Fast Weak key: %s\n", cu_bn_bn2hex(&B[k]));
-                //printf("[GPU] Fast Weak key: %s\n", cu_bn_bn2hex(&C[k]));
                 sum += 1;
             }
         }
@@ -317,7 +318,9 @@ int main(int argc, char* argv[]){
     }
 
     sum=0;
-
+    /**
+		Select algorithm passed as command line argument
+	*/
     if(cpu_gpu==CPU || cpu_gpu==BOTH){
         clock_t start = clock();
         switch(gcd_kind){
@@ -325,7 +328,6 @@ int main(int argc, char* argv[]){
                 for(i=0, k=0; i<number_of_keys; i++){
                     for(j=(i+1); j<number_of_keys; j++, k++){
                         if( strcmp( "1", cu_bn_bn2hex(cu_dev_classic_euclid(&A[k], &B[k])))){
-                            //printf("[CPU] Euclidean Weak key: %s\n", cu_bn_bn2hex(cu_dev_classic_euclid(&A[k], &B[k])));
                             sum+=1;
                         }
                     }
@@ -335,7 +337,6 @@ int main(int argc, char* argv[]){
                 for(i=0, k=0; i<number_of_keys; i++){
                     for(j=(i+1); j<number_of_keys; j++, k++){
                         if( strcmp( "1", cu_bn_bn2hex(cu_dev_binary_gcd(&A[k], &B[k])))){
-                            //printf("[CPU] Binary Weak key: %s\n", cu_bn_bn2hex(cu_dev_binary_gcd(&A[k], &B[k])));
                             sum+=1;
                         }
                     }
@@ -345,7 +346,6 @@ int main(int argc, char* argv[]){
                 for(i=0, k=0; i<number_of_keys; i++){
                     for(j=(i+1); j<number_of_keys; j++, k++){
                         if( strcmp( "1", cu_bn_bn2hex(cu_dev_fast_binary_euclid(&A[k], &B[k])))){
-                            //printf("[CPU] Fast Weak key: %s\n", cu_bn_bn2hex(cu_dev_fast_binary_euclid(&A[k], &B[k])));
                             sum+=1;
                         }
                     }

@@ -41,8 +41,8 @@ __host__ __device__ long cu_dev_long_abs(long number);
  *
  *	subtracts b from a.
  *
- *  @param[in,out] a U_BN number
- *  @param[in,out] b U_BN number
+ *  @param[in,out] a U_BN struct
+ *  @param[in,out] b U_BN struct
  *  @param[in,out] r result
  *  @return 1 on success
  */
@@ -52,7 +52,7 @@ __host__ __device__ int cu_dev_bn_usub(const U_BN *a, const U_BN *b, U_BN *r);
  *
  *	shifts a right by one and returns the result (a/2)
  *
- *  @param[in,out] a U_BN number
+ *  @param[in,out] a U_BN struct
  *  @return 1 on success
  */
 __host__ __device__ int cu_dev_bn_rshift1(U_BN *a);
@@ -61,8 +61,8 @@ __host__ __device__ int cu_dev_bn_rshift1(U_BN *a);
  *
  *	shifts a left by n bits and returns the result (r=a*2^n)
  *
- *  @param[in,out] a U_BN number
- *  @param[in,out] n number of bits to left
+ *  @param[in,out] a U_BN struct
+ *  @param[in] n number of bits to left
  *  @return 1 on success
  */
 __host__ __device__ int cu_dev_bn_lshift(U_BN *a, unsigned n);
@@ -73,8 +73,8 @@ __host__ __device__ int cu_dev_bn_lshift(U_BN *a, unsigned n);
  *	binary Euclidean algorithm and return the result in r. 
  *	r may be the same BIGNUM as a or b.
  *
- *  @param[in,out] a U_BN number
- *  @param[in,out] b U_BN number
+ *  @param[in,out] a U_BN struct
+ *  @param[in,out] b U_BN struct
  *  @return r U_BN result of GCD
  */
 __host__ __device__ U_BN *cu_dev_binary_gcd(U_BN *a, U_BN *b);
@@ -85,8 +85,8 @@ __host__ __device__ U_BN *cu_dev_binary_gcd(U_BN *a, U_BN *b);
  *	fast binary Euclidean algorithm and return the result in r. 
  *	r may be the same BIGNUM as a or b.
  *
- *  @param[in,out] a U_BN number
- *  @param[in,out] b U_BN number
+ *  @param[in,out] a U_BN struct
+ *  @param[in,out] b U_BN struct
  *  @return r U_BN result of GCD
  */
 __host__ __device__ U_BN *cu_dev_fast_binary_euclid(U_BN *a, U_BN *b);
@@ -97,8 +97,8 @@ __host__ __device__ U_BN *cu_dev_fast_binary_euclid(U_BN *a, U_BN *b);
  *	Euclidean algorithm and return the result in r. 
  *	r may be the same BIGNUM as a or b.
  *
- *  @param[in,out] a U_BN number
- *  @param[in,out] b U_BN number
+ *  @param[in,out] a U_BN struct
+ *  @param[in,out] b U_BN struct
  *  @return r U_BN result of GCD
  */
 __host__ __device__ U_BN *cu_dev_classic_euclid(U_BN *a, U_BN *b);

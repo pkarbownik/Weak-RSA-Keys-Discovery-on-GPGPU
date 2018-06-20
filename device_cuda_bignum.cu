@@ -63,7 +63,6 @@ __host__ __device__ int cu_dev_bn_usub(const U_BN *a, const U_BN *b, U_BN *r){
     bp = b->d;
     rp = r->d;
 
-#if 1
     carry = 0;
     for (i = min; i != 0; i--) {
         t1 = *(ap++);
@@ -75,7 +74,6 @@ __host__ __device__ int cu_dev_bn_usub(const U_BN *a, const U_BN *b, U_BN *r){
             carry = (t1 < t2);
             t1 = (t1 - t2);
         }
-        dummy = t1;
         *(rp++) = t1;
     }
     if (carry) {     

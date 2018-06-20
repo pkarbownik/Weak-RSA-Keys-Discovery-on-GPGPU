@@ -426,7 +426,7 @@ void get_u_bn_from_mod_PEM_test(void){
 	U_BN *u_bn = NULL;
 
 	u_bn = cu_bn_new();
-	assert( 1 == get_u_bn_from_mod_PEM("keys_and_messages/1.pem", u_bn));
+	assert( 1 == get_u_bn_from_mod_PEM("100k1024b/1.pem", u_bn));
 	cu_bn_free(u_bn);
 	INFO("Test passed\n");
 }
